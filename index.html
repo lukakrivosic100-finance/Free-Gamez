@@ -313,3 +313,55 @@
         let tttActive = true;
 
         const winConditions = [
+, [3, 4, 5], [6, 7, 8],
+, [1, 4, 7], [2, 5, 8],
+, [2, 4, 6]
+];
+function makeMove(cell, index) {
+if (tttBoard[index] !== "" || !tttActive) return;
+tttBoard[index] = currentPlayer;
+cell.innerText = currentPlayer;
+cell.style.color = currentPlayer === "X" ? "#00e1ff" : "#ff007f";
+checkTTTResult();
+}
+function checkTTTResult() {
+let roundWon = false;
+for (let i = 0; i < winConditions.length; i++) {
+const [a, b, c] = winConditions[i];
+if (tttBoard[a] && tttBoard[a] === tttBoard[b] && tttBoard[a] === tttBoard[c]) {
+roundWon = true;
+break;
+}
+}
+if (roundWon) {
+document.getElementById("tttStatus").innerText = 🎉 Player ${currentPlayer} Wins!;
+tttActive = false;
+return;
+if (!tttBoard.includes("")) {
+document.getElementById("tttStatus").innerText = "🤝 It's a Tie!";
+tttActive = false;
+return;
+}
+currentPlayer = currentPlayer === "X" ? "O" : "X";
+document.getElementById("tttStatus").innerText = Player ${currentPlayer}'s Turn;
+}
+function resetTTT() {
+tttBoard = ["", "", "", "", "", "", "", "", ""];
+currentPlayer = "X";
+tttActive = true;
+document.getElementById("tttStatus").innerText = "Player X's Turn";
+document.querySelectorAll('.ttt-cell').forEach(cell => cell.innerText = "");
+}
+// ==========================================
+// GAME 3: CLICKER CORE CODE
+// ==========================================
+let count = 0;
+function clickPowerCore() {
+count++;
+document.getElementById("clickScore").innerText = count;
+}
+function resetClicker() {
+count = 0;
+document.getElementById("clickScore").innerText = count;
+}// Boot up snake automatically on load
+window.onload = resetSnake;
