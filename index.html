@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Mini Arcade Hub</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #121214;
+            color: #ffffff;
+            text-align: center;
+            padding: 20px;
+        }
+
+        header {
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            color: #00ff88;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            color: #a0a0a5;
+        }
+
+        /* Tabs Navigation */
+        .tabs {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .tab-btn {
+            background-color: #202024;
+            color: #fff;
+            border: 2px solid #323238;
+            padding: 12px 24px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn:hover {
+            border-color: #00ff88;
+            background-color: #28282e;
+        }
+
+        .tab-btn.active {
+            background-color: #00ff88;
+            color: #121214;
+            border-color: #00ff88;
+        }
+
+        /* Game Containers */
+        .game-window {
+            display: none;
+            background-color: #202024;
+            border: 2px solid #323238;
+            border-radius: 12px;
+            padding: 20px;
+            max-width: 500px;
+            margin: 0 auto;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+        }
+
+        .game-window.active {
+            display: block;
+        }
+
+        h2 {
+            margin-bottom: 15px;
+            color: #00e1ff;
+        }
+
+        /* GAME 1: SNAKE */
+        #snakeCanvas {
+            background-color: #121214;
+            border: 2px solid #323238;
+            display: block;
+            margin: 0 auto 15px auto;
+        }
+
+        /* GAME 2: TIC-TAC-TOE */
+        .ttt-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            max-width: 300px;
+            margin: 0 auto 15px auto;
+        }
+
+        .ttt-cell {
+            width: 90px;
+            height: 90px;
+            background-color: #121214;
+            border: 2px solid #323238;
+            border-radius: 8px;
+            font-size: 2rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .ttt-cell:hover {
+            background-color: #28282e;
+            border-color: #00e1ff;
+        }
+
+        /* GAME 3: CLICKER */
+        .click-btn {
+            background: linear-gradient(135deg, #ff007f, #7f00ff);
+            color: white;
+            border: none;
+            padding: 20px 40px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 0, 127, 0.4);
+            transition: transform 0.1s;
+            margin: 20px 0;
+        }
+
+        .click-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* General Buttons */
+        .btn {
+            background-color: #323238;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn:hover {
+            background-color: #44444a;
+        }
+
+        .score-board {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🎮 Free Mini Arcade</h1>
+        <p>A collection of clean, interactive browser games running purely on static HTML/JS.</p>
+    </header>
+
+    <!-- Navigation Menu for Switching Games -->
+    <nav class="tabs">
+        <button class="tab-btn active" onclick="switchGame('snake-game')">🟩 Snake</button>
+        <button class="tab-btn" onclick="switchGame('ttt-game')">❌ Tic-Tac-Toe</button>
+        <button class="tab-btn" onclick="switchGame('clicker-game')">⚡ Clicker Master</button>
+    </nav>
+
+    <!-- GAME 1: SNAKE -->
+    <div id="snake-game" class="game-window active">
+        <h2>Retro Snake</h2>
+        <div class="score-board">Score: <span id="snakeScore">0</span></div>
+        <canvas id="snakeCanvas" width="300" height="300"></canvas>
+        <p style="font-size: 0.9rem; color: #a0a0a5;">Use Arrow Keys or WASD to navigate</p>
+    </div>
+
+    <!-- GAME 2: TIC-TAC-TOE -->
+    <div id="ttt-game" class="game-window">
+        <h2>Tic-Tac-Toe</h2>
+        <div class="score-board" id="tttStatus">Player X's Turn</div>
+        <div class="ttt-grid">
+            <div class="ttt-cell" onclick="makeMove(this, 0)"></div>
+            <div class="ttt-cell" onclick="makeMove(this, 1)"></div>
+            <div class="ttt-cell" onclick="makeMove(this, 2)"></div>
+            <div class="ttt-cell" onclick="makeMove(this, 3)"></div>
+            <div class="ttt-cell" onclick="makeMove(this, 4)"></div>
+            <div class="ttt-cell" onclick="makeMove(this, 5)"></div>
+            <div class="ttt-cell" onclick="makeMove(this, 6)"></div>
+            <div class="ttt-cell" onclick="makeMove(this, 7)"></div>
+            <div class="ttt-cell" onclick="makeMove(this, 8)"></div>
+        </div>
+        <button class="btn" onclick="resetTTT()">Restart Match</button>
+    </div>
+
+    <!-- GAME 3: CLICKER -->
+    <div id="clicker-game" class="game-window">
+        <h2>Clicker Master</h2>
+        <p style="color: #a0a0a5;">Click the power core as fast as you can!</p>
+        <button class="click-btn" onclick="clickPowerCore()">ENERGY CORE</button>
+        <div class="score-board">Total Energy: <span id="clickScore">0</span></div>
+        <button class="btn" onclick="resetClicker()">Drain Core</button>
+    </div>
+
+    <script>
+        // TAB NAV LOGIC
+        function switchGame(gameId) {
+            document.querySelectorAll('.game-window').forEach(win => win.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            
+            document.getElementById(gameId).classList.add('active');
+            event.target.classList.add('active');
+
+            if(gameId === 'snake-game') { resetSnake(); }
+        }
+
+        // ==========================================
+        // GAME 1: SNAKE CORE CODE
+        // ==========================================
+        const canvas = document.getElementById("snakeCanvas");
+        const ctx = canvas.getContext("2d");
+        const grid = 15;
+        let snake, d, food, snakeScore, snakeGameInterval;
+
+        function resetSnake() {
+            clearInterval(snakeGameInterval);
+            snake = [{x: 10 * grid, y: 10 * grid}];
+            d = "RIGHT";
+            snakeScore = 0;
+            document.getElementById("snakeScore").innerText = snakeScore;
+            generateFood();
+            snakeGameInterval = setInterval(drawSnake, 120);
+        }
+
+        function generateFood() {
+            food = {
+                x: Math.floor(Math.random() * (canvas.width / grid)) * grid,
+                y: Math.floor(Math.random() * (canvas.height / grid)) * grid
+            };
+        }
+
+        document.addEventListener("keydown", direction);
+        function direction(event) {
+            let key = event.keyCode;
+            if ((key == 37 || key == 65) && d != "RIGHT") d = "LEFT";
+            else if ((key == 38 || key == 87) && d != "DOWN") d = "UP";
+            else if ((key == 39 || key == 68) && d != "LEFT") d = "RIGHT";
+            else if ((key == 40 || key == 83) && d != "UP") d = "DOWN";
+        }
+
+        function drawSnake() {
+            ctx.fillStyle = "#121214";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            for (let i = 0; i < snake.length; i++) {
+                ctx.fillStyle = i === 0 ? "#00ff88" : "#00b35f";
+                ctx.fillRect(snake[i].x, snake[i].y, grid - 1, grid - 1);
+            }
+
+            ctx.fillStyle = "#ff0055";
+            ctx.fillRect(food.x, food.y, grid - 1, grid - 1);
+
+            let snakeX = snake[0].x;
+            let snakeY = snake[0].y;
+
+            if (d == "LEFT") snakeX -= grid;
+            if (d == "UP") snakeY -= grid;
+            if (d == "RIGHT") snakeX += grid;
+            if (d == "DOWN") snakeY += grid;
+
+            if (snakeX == food.x && snakeY == food.y) {
+                snakeScore++;
+                document.getElementById("snakeScore").innerText = snakeScore;
+                generateFood();
+            } else {
+                snake.pop();
+            }
+
+            let newHead = { x: snakeX, y: snakeY };
+
+            // Game over logic
+            if (snakeX < 0 || snakeX >= canvas.width || snakeY < 0 || snakeY >= canvas.height || collision(newHead, snake)) {
+                clearInterval(snakeGameInterval);
+                alert("Game Over! Final Score: " + snakeScore);
+                resetSnake();
+                return;
+            }
+
+            snake.unshift(newHead);
+        }
+
+        function collision(head, array) {
+            for (let i = 0; i < array.length; i++) {
+                if (head.x == array[i].x && head.y == array[i].y) return true;
+            }
+            return false;
+        }
+
+        // ==========================================
+        // GAME 2: TIC-TAC-TOE CORE CODE
+        // ==========================================
+        let tttBoard = ["", "", "", "", "", "", "", "", ""];
+        let currentPlayer = "X";
+        let tttActive = true;
+
+        const winConditions = [
